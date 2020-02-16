@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="description" content="CS4386 Tutorial 01" />
+  <meta name="keywords" content="Tic Tac Toc" />
+  <title>CS4386 Tutorial 01 - Tic Tac Toc</title>
+  <script>
+	Endgame=0;
+	Player1=1;
+	Player2=2;
+	Turn = Endgame;
+	winner=0;
+	
+	boardState=new Array();
+	boardX=0;
+	boardY=0;
+	boardW=600;
+	boardH=600;
+	blockSize=200;
+	markSize=300;
+
+	function init(){
+		canvas=document.getElementById('game')
+		ctx=canvas.getContext && canvas.getContext('2d');
+  		gradient=ctx.createLinearGradient(0,0,blockSize*3,blockSize*3);
+  		gradient.addColorStop("0","blue");
+  		gradient.addColorStop("0.5","blue");
+  		gradient.addColorStop("1.0","red");
+		this.image=new Image();
+		this.image.src="ttt.png";
+		this.onload=imageReady;
+		console.log("loadImage");
+	}
+	
+	function imageReady(){		
+		canvas.addEventListener('mousedown',mouseClick,false);
+		newGame();
+	}
+	
+	function newGame(){
+		var i;
+		for (i=0;i<9;i++){
+			boardState[i]=0;
+		}
+		winner=0;
+		Turn=Player1;
+  		if (ctx)
+  			draw();
+  		else
+			alert("Unable to create drawing context");
+	}
+	
+	function mark(x,y,playerID){
+		
+		/* 	|0 1 2 |
+		  	|3 4 5 |
+			|6 7 8 |
+		*/
+
+		console.log(x+","+y);
+		var index=(x+3*y);
+		console.log("index:"+index);
+		
+		if (boardState[index]==0){
+			console.log("playertaken"+index);
+			console.log(boardState[index]);
+			boardState[index]=playerID;
+			cross=TestWin(boardState,playerID);
+			if (cross.match){
+				winner=playerID;
+				Turn=Endgame;
+			}
+			else{
+				var isDraw = true;
+				for(var i=0; i<9; i++)
+				    if (boardState[i]==0)
+					isDraw = false;
+				if (isDraw)
+				    Turn = Endgame;
+				else
+				    Turn = Turn==Player1 ? Player2:Player1;
+			}
+		}
+		else{
+			console.log("Invalid Move:"+index);
+			console.log(boardState[index]);
+			alert("You cannot take this block");
+		}
+		draw();
+	}
+	
+	function mouseClick(e){
+		console.log("mouseClick");
+		if (winner==0){
+			var rect=canvas.getBoundingClientRect();
+			var mx=e.clientX-rect.left;
+			var my=e.clientY-rect.top;
+			x=mx-boardX;
+			y=my-boardY;
+			x/=blockSize;
+			y/=blockSize;
+			x=x|0;
+			y=y|0;
+			mark(x,y,Turn);
+		}
+	}
+
+	function draw(){
+  		ctx.clearRect(0,0,boardW,boardH);
+  		var srcX;
+		ctx.lineWidth=1;
+  		ctx.beginPath();
+  		for (var r=0;r<3;r++){
+			
+  			if (r!=0){
+  				ctx.moveTo(0,r*blockSize);
+  				ctx.lineTo(blockSize*3,r*blockSize);
+  			}
+			
+  			for (var c=0;c<3;c++){
+	  			if (r==0 && c!=0){
+	  				ctx.moveTo(c*blockSize,0);
+	  				ctx.lineTo(c*blockSize, blockSize*3);
+	  			}
+				
+  				if (boardState[r*3+c]!=0){
+	  				if (boardState[r*3+c]==Player2)
+	  					srcX=0;
+	  				else if (boardState[r*3+c]==Player1)
+	  					srcX=markSize;
+					ctx.drawImage(this.image,srcX,0,markSize,markSize,c*blockSize,r*blockSize,blockSize,blockSize);				
+				}
+  			}
+  		}
+  		ctx.stroke();
+		if (winner!=0){
+			console.log("Draw Cross");
+			ctx.beginPath();
+  			ctx.lineWidth=20;
+			ctx.moveTo(cross.sc*blockSize+blockSize/2,cross.sr*blockSize+blockSize/2);
+  			ctx.lineTo(cross.ec*blockSize+blockSize/2,cross.er*blockSize+blockSize/2);
+  			console.log(cross);
+  			console.log("from:"+cross.sc*blockSize+","+cross.sr*blockSize);
+  			console.log("to:"+cross.ec*blockSize+","+cross.er*blockSize);
+			ctx.font="30px Arial";
+			ctx.lineWidth=20;
+			ctx.stroke();
+			ctx.fillStyle="orange";
+  			if (winner==Player1){
+  				ctx.fillText("Player 1 (O) Wins!",blockSize,blockSize+blockSize/2);
+  			}
+			else{
+  				ctx.fillText("Player 2 (X) Wins!",blockSize,blockSize+blockSize/2);
+  			}
+  		}
+	}
+	
+	function getIndex(r,c){
+		return r*3+c;
+	}
+
+	function getRow(index){
+		return (index/3)|0;
+	}
+
+	function getCol(index){
+		return index%3;
+	}
+	
+	function TestWin(board,playerID){
+		var r,c;
+		var curID;
+		var match=true;
+		
+		// test each row
+		for (r=0;r<3;r++){
+			match=true;
+			for (c=0;c<3 &&match;c++){
+				match=match&&(playerID==board[getIndex(r,c)]);
+			}
+			if (match)
+				return {sr:r,sc:0,er:r,ec:2,match:true};
+		}
+		
+		// test each column
+		for (c=0;c<3;c++){
+			match=true;
+			for (r=0;r<3 &&match;r++){
+				match=match&&(playerID==board[getIndex(r,c)]);
+			}
+			if (match)
+				return {sr:0,sc:c,er:2,ec:c,match:true};
+		}
+
+        match=true;
+
+        for (r=0,c=0;r<3&&match;r++,c++){
+			match=match&&(playerID==board[getIndex(r,c)]);
+		}
+		if (match)
+			return {sr:0,sc:0,er:2,ec:2,match:true};
+
+        match=true;
+
+        for (r=0,c=2;r<3&&match;r++,c--){
+			match=match&&(playerID==board[getIndex(r,c)]);
+		}
+		if (match)
+			return {sr:0,sc:2,er:2,ec:0,match:true};
+		return {match:false};
+	}
+	
+	function AI_a_NextMove(){
+		
+		var index;
+		if (Turn==Endgame)
+		    return;
+		else {
+		    for (var i=0;i<9;i++){
+			if (boardState[i]==0){
+			    index = i;
+			    break;
+			}
+		    }
+		}
+		
+		y = getRow(index);
+		x = getCol(index);
+		mark(x,y,Turn);
+	}
+
+	function AI_b_NextMove(){
+		
+		var possibleMove=new Array();
+		var index;
+		if (Turn==Endgame)
+		    return;
+		else {
+		    for (var i=0;i<9;i++){
+                if (boardState[i]==0){
+                    if (TestWin(boardState, Turn)){
+                        i = 9;
+                        possibleMove.
+                            
+                    }
+                    possibleMove.push(i);			    
+                }
+            }
+		    index = possibleMove[Math.floor(Math.random()*possibleMove.length)];
+		}
+		
+		y = getRow(index);
+		x = getCol(index);
+		mark(x,y,Turn);
+	}
+	
+  </script>
+  
+</head>
+<body>
+	
+  <div>
+    <canvas id='game' width='600' height='600'> </canvas>
+  </div>
+  
+  <form>
+    <input type="button" value="New Game" onclick="newGame()" >
+    <input type="button" value="AI Alpha Next Move" onclick="AI_a_NextMove()" >
+    <input type="button" value="AI Beta Next Move" onclick="AI_b_NextMove()" >
+  </form>
+  
+  <script>
+	init();
+  </script>
+  
+</body>
+</html>

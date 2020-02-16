@@ -1,0 +1,55 @@
+(global-set-key (kbd "M-<f5>") (lambda() (interactive) (load-file "/home/emacs/.emacs.d/init.el")))
+
+(package-initialize)
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+
+(setq package-selected-packages
+   (quote
+    (flycheck format-all goto-line-preview highlight-indent-guides dap-mode adaptive-wrap swiper lsp-ivy company-lsp lsp-ui lsp-python-ms company lsp-java lsp-mode evil undo-tree)))
+
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(show-paren-mode)
+(column-number-mode)
+(windmove-default-keybindings 'meta)
+
+(ivy-mode t)
+(evil-mode t)
+
+(global-hl-line-mode)
+(global-undo-tree-mode)
+(global-eldoc-mode)
+(global-company-mode)
+
+(load-theme 'wombat)
+
+(load-file "/home/emacs/.emacs.d/keymap.el")
+(load-file "/home/emacs/.emacs.d/vars.el")
+(load-file "/home/emacs/.emacs.d/hooks.el")
+(load-file "/home/emacs/.emacs.d/function.el")
+
+(setq flycheck-python-flake8-executable "/home/python/anaconda3/bin/python3")
+(setq flycheck-python-pycompile-executable "/home/python/anaconda3/bin/python3")
+(setq flycheck-python-pylint-executable "/home/python/anaconda3/bin/python3")
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(lsp-python-ms-python-executable-cmd "/home/python/anaconda3/bin/python3")
+ '(package-selected-packages
+   (quote
+    (flycheck format-all goto-line-preview highlight-indent-guides dap-mode adaptive-wrap swiper lsp-ivy company-lsp lsp-ui lsp-python-ms company lsp-java lsp-mode evil undo-tree)))
+ '(python-shell-interpreter "/home/python/anaconda3/bin/python3"))
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(helm-selection ((t (:background "gray20"))))
+ '(helm-source-header ((t (:foreground "white" :weight bold :height 1)))))

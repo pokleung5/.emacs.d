@@ -1,0 +1,56 @@
+ls
+ls 
+ls 
+cd bin/
+s;
+ls 
+cd ..
+exit 
+ls 
+cd .emacs.d/
+ls 
+mkdir file-backup
+ls 
+:q
+pyls
+ls 
+cd ...
+..
+cd 
+ls 
+cd ../python/anaconda3/bin/python3
+../python/anaconda3/bin/python3
+cd .
+cd ..
+cd ../python/
+find -name "nn"
+find -name "torch"
+su eric
+sys.path
+echo sys.path
+env | grep python 
+env | grep python
+env
+cd /../../home/python/anaconda3/bin/python
+/../../home/python/anaconda3/bin/python
+lss
+ls
+ls 
+landscape-sysinfo 
+sed 
+sudo adduser db2 
+su eric
+ls
+ls F_FI_
+ls F_FI_
+ls F_FI_
+ls F_F
+ls F_FI_FTP_DEPOSIT_LOAN_INTEREST.sql 
+cp F_FI_FTP_DEPOSIT_LOAN_INTEREST.sql ../.
+ls
+cd ..
+ls
+ls
+perl mysh/
+perl
+cat F_FI_FTP_DEPOSIT_LOAN_INTEREST.sql

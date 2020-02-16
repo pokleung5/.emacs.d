@@ -1,0 +1,6 @@
+
+
+sed -E "/#.*$/d" $PartName | tr '\n' '\r' | sed 's|/\*[^/]*\*/||g'  | tr '\r' '\n' | grep -n ".*" > $ResultName
+
+ErrorLine=$(grep -E "^${LineN}:.*$" $ResultName | cut -d: -f2)
+

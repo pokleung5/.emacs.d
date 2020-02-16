@@ -1,0 +1,5 @@
+
+Keyword=$1
+
+sed -E "/#.*$/d" . | tr '\n' '\r' | sed 's|/\*[^/]*\*/||g'  | tr '\r' '\n' | grep -n ".*" | grep -E "${Keyword}" $ResultName | cut -d: -f2)
+
